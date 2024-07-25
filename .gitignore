@@ -1,0 +1,11 @@
+# PyInstaller build dizinleri
+/build/
+/dist/
+
+# PyInstaller .spec dosyası
+*.spec
+
+# Genel Python dosyaları ve klasörleri
+__pycache__/
+*.py[cod]
+*$py.class
