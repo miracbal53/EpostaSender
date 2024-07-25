@@ -17,6 +17,10 @@ sent_emails_file_path = "sent_emails.txt"
 email_count_file_path = "email_count.json"
 stop_sending = False
 
+# Mevcut sürüm ve GitHub API URL'si
+current_version = "v1.1.0"
+repo_url = "https://api.github.com/repos/miracbal53/EpostaSender/releases/latest"
+
 # Saatlik, günlük ve dakikalık limitler
 MAX_EMAILS_PER_HOUR = 300
 MAX_EMAILS_PER_DAY = 5000
@@ -256,6 +260,7 @@ def update_email_counts_periodically():
         update_counts_display()
         time.sleep(60)
 
+# Güncelleme kontrolü
 def check_for_updates(repo_url, current_version, root):
     try:
         response = requests.get(repo_url)
@@ -286,10 +291,6 @@ def download_and_update(zip_url):
         os.execl(sys.executable, sys.executable, *sys.argv)
     except Exception as e:
         messagebox.showerror("Güncelleme Hatası", f"Güncelleme sırasında bir hata oluştu: {str(e)}")
-
-# Mevcut sürüm ve GitHub API URL'si
-current_version = "v1.1.0"
-repo_url = "https://api.github.com/repos/miracbal53/eposta_sender/releases/latest"
 
 # Kullanıcı arayüzü oluşturma
 root = tk.Tk()
@@ -352,9 +353,7 @@ update_counts_display()
 # E-posta gönderim bilgilerini periyodik olarak güncelleyen bir iş parçacığı başlat
 threading.Thread(target=update_email_counts_periodically, daemon=True).start()
 
-# Güncellemeleri kontrol et
-threading.Thread(target=check_for_updates, args=(repo_url, current_version, root), daemon=True).start()
+# Uygulama başlatıldığında güncellemeleri kontrol edin
+check_for_updates(repo_url, current_version, root)
 
 root.mainloop()
-
-
