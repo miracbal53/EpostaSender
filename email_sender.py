@@ -288,8 +288,8 @@ def download_and_update(zip_url):
         messagebox.showerror("Güncelleme Hatası", f"Güncelleme sırasında bir hata oluştu: {str(e)}")
 
 # Mevcut sürüm ve GitHub API URL'si
-current_version = "v1.0.0"
-repo_url = "https://api.github.com/repos/kullanici_adi/eposta_sender/releases/latest"
+current_version = "v1.1.0"
+repo_url = "https://api.github.com/repos/miracbal53/eposta_sender/releases/latest"
 
 # Kullanıcı arayüzü oluşturma
 root = tk.Tk()
