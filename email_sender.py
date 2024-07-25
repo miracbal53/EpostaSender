@@ -8,6 +8,9 @@ import time
 import os
 from datetime import datetime, timedelta
 import json
+import requests
+import zipfile
+import sys
 
 recipient_file_path = ""
 sent_emails_file_path = "sent_emails.txt"
@@ -253,6 +256,41 @@ def update_email_counts_periodically():
         update_counts_display()
         time.sleep(60)
 
+def check_for_updates(repo_url, current_version, root):
+    try:
+        response = requests.get(repo_url)
+        response.raise_for_status()
+        latest_version = response.json()["tag_name"]
+        if latest_version != current_version:
+            messagebox.showinfo("Güncelleme", "Güncelleme mevcut! Uygulama güncelleniyor...")
+            download_and_update(response.json()["zipball_url"])
+        else:
+            log_message("Yazılımınız güncel.")
+    except Exception as e:
+        messagebox.showerror("Güncelleme Hatası", f"Güncellemeler kontrol edilirken bir hata oluştu: {str(e)}")
+
+def download_and_update(zip_url):
+    try:
+        response = requests.get(zip_url)
+        response.raise_for_status()
+        with open("update.zip", "wb") as file:
+            file.write(response.content)
+        with zipfile.ZipFile("update.zip", "r") as zip_ref:
+            zip_ref.extractall("update")
+        for root, dirs, files in os.walk("update"):
+            for file in files:
+                os.replace(os.path.join(root, file), file)
+        os.remove("update.zip")
+        os.rmdir("update")
+        messagebox.showinfo("Güncelleme", "Güncelleme tamamlandı. Uygulama yeniden başlatılıyor...")
+        os.execl(sys.executable, sys.executable, *sys.argv)
+    except Exception as e:
+        messagebox.showerror("Güncelleme Hatası", f"Güncelleme sırasında bir hata oluştu: {str(e)}")
+
+# Mevcut sürüm ve GitHub API URL'si
+current_version = "v1.0.0"
+repo_url = "https://api.github.com/repos/kullanici_adi/eposta_sender/releases/latest"
+
 # Kullanıcı arayüzü oluşturma
 root = tk.Tk()
 root.title("Toplu E-posta Gönderimi")
@@ -314,5 +352,9 @@ update_counts_display()
 # E-posta gönderim bilgilerini periyodik olarak güncelleyen bir iş parçacığı başlat
 threading.Thread(target=update_email_counts_periodically, daemon=True).start()
 
+# Güncellemeleri kontrol et
+threading.Thread(target=check_for_updates, args=(repo_url, current_version, root), daemon=True).start()
+
 root.mainloop()
+
 
