@@ -294,7 +294,7 @@ def download_and_update(zip_url):
 
 # Kullanıcı arayüzü oluşturma
 root = tk.Tk()
-root.title("Toplu E-posta Gönderimi")
+root.title(f"Toplu E-posta Gönderimi - Sürüm {current_version}")
 
 # Responsive layout için column ve row configure
 root.grid_columnconfigure(0, weight=1)
@@ -309,6 +309,7 @@ root.grid_rowconfigure(6, weight=1)
 root.grid_rowconfigure(7, weight=1)
 root.grid_rowconfigure(8, weight=1)
 root.grid_rowconfigure(9, weight=1)
+root.grid_rowconfigure(10, weight=1)
 
 tk.Label(root, text="Gönderici E-posta Adresi:").grid(row=0, column=0, padx=10, pady=10, sticky="e")
 email_entry = tk.Entry(root, width=50)
@@ -348,6 +349,8 @@ tk.Label(root, text="E-posta Gönderim Bilgileri:").grid(row=9, column=0, padx=1
 counts_display = tk.Text(root, width=50, height=5, state=tk.DISABLED)
 counts_display.grid(row=9, column=1, padx=10, pady=10, sticky="ew")
 
+tk.Label(root, text="Miraç Bal tarafından geliştirilmiştir", fg="grey").grid(row=10, column=0, columnspan=2, pady=5)
+
 update_counts_display()
 
 # E-posta gönderim bilgilerini periyodik olarak güncelleyen bir iş parçacığı başlat
@@ -357,3 +360,4 @@ threading.Thread(target=update_email_counts_periodically, daemon=True).start()
 check_for_updates(repo_url, current_version, root)
 
 root.mainloop()
+
